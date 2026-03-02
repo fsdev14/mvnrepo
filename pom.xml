@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.fd.vplus.DBS</groupId>
+	<artifactId>DMCv2</artifactId>
+	<packaging>jar</packaging>
+	<version>2.0.4.30</version> <!--2.0.4.29 - NAB Base : 2.0.4.30 - DBS Retrofit -->
+	<name>Dynamic Messaging Communicator</name>
+	<url>http://www.firstdata.com</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<camel.version>3.14.8</camel.version>
+		<java.version>17</java.version>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<maven.compiler.release>${java.version}</maven.compiler.release>
+	</properties>
+	 <distributionManagement>
+		<repository>
+			<id>deployment</id>
+			<name>GAD Apps Releases</name>
+			<url>https://nexus-emea.1dc.com/repository/emea-gad-liteui</url>
+		</repository>
+		<snapshotRepository>
+			<id>deployment</id>
+			<name>GAD Apps Snapshots</name>
+			<url>https://nexus-emea.1dc.com/repository/emea-gad-liteui-snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-main</artifactId>
+			<version>${camel.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-core-engine</artifactId>
+			<version>${camel.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-mina</artifactId>
+			<version>${camel.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-http</artifactId>
+			<version>${camel.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.camel</groupId>
+					<artifactId>camel-cloud</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-jetty</artifactId>
+			<version>${camel.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-jms</artifactId>
+			<version>${camel.version}</version>
+			<!-- Pull the spring dependencies on need basis. Currently the dependency 
+				is only on spring jms and spring beans(transitive for jms) -->
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.camel</groupId>
+					<artifactId>camel-spring</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-tx</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-messaging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>okhttp</artifactId>
+			<version>4.9.1</version>
+		</dependency>
+		<!-- Commented during Camel migration from 2.x to 3.x
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-ftp</artifactId>
+			<version>${camel.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-stream</artifactId>
+			<version>${camel.version}</version>
+		</dependency> -->
+		
+		<!-- <dependency> <groupId>org.apache.camel</groupId> <artifactId>camel-jackson</artifactId> 
+			<version>${camel.version}</version> </dependency> -->
+		<!-- <dependency> <groupId>org.apache.camel</groupId> <artifactId>camel-xmljson</artifactId> 
+			<version>${camel.version}</version> <exclusions> <exclusion> <groupId>xom</groupId> 
+			<artifactId>xom</artifactId> </exclusion> </exclusions> </dependency> -->
+		<!-- <dependency> <groupId>org.apache.camel</groupId> <artifactId>camel-jsonpath</artifactId> 
+			<version>${camel.version}</version> </dependency> -->
+		<!-- testing <dependency> <groupId>org.apache.camel</groupId> <artifactId>camel-test</artifactId> 
+			<version>${camel.version}</version> <scope>test</scope> </dependency> -->
+			
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish</groupId>
+			<artifactId>javax.json</artifactId>
+			<version>1.0.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-compress</artifactId>
+			<version>1.21</version>
+		</dependency>
+		<dependency>
+			<groupId>com.jayway.jsonpath</groupId>
+			<artifactId>json-path</artifactId>
+			<version>2.8.0</version>
+		</dependency>
+
+		<!-- <dependency> <groupId>com.ibm</groupId> <artifactId>com.ibm.mqjms</artifactId> 
+			<version>5.3.07</version> </dependency> <dependency> <groupId>com.ibm</groupId> 
+			<artifactId>com.ibm.mq</artifactId> <version>5.3.07</version> </dependency> -->
+		<!-- <dependency> <groupId>javax.jms</groupId> <artifactId>jms</artifactId> 
+			<version>1.1</version> </dependency> <dependency> <groupId>javax.naming</groupId> 
+			<artifactId>jndi</artifactId> <version>1.2.1</version> </dependency> -->
+		<!-- logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<version>2.17.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.17.1</version>
+		</dependency>
+		<!-- Non camel related -->
+		<dependency>
+			<groupId>org.jdom</groupId>
+			<artifactId>jdom2</artifactId>
+			<version>2.0.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.7</version>
+		</dependency>
+		<!-- Commented during Camel migration from 2.X to 3.X
+		<dependency>
+			<groupId>javax.jms</groupId> 
+			<artifactId>javax.jms-api</artifactId> 
+			<version>2.0-b08</version> 
+		</dependency>
+		<dependency> 
+			<groupId>javax.resource</groupId> 
+			<artifactId>connector</artifactId> 
+			<version>1.0</version> 
+		</dependency>
+		<dependency> 
+			<groupId>com.firstdata.fs.common.logging</groupId> 
+			<artifactId>fs-logging</artifactId> 
+			<version>1.0.1-SNAPSHOT</version> 
+		</dependency> -->
+
+
+		<!-- <dependency> <groupId>org.json</groupId> <artifactId>json</artifactId> 
+			</dependency> -->
+		<dependency>
+			<groupId>com.ibm</groupId>
+			<artifactId>com.ibm.mq.headers</artifactId>
+			<version>8.0.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.ibm</groupId>
+			<artifactId>com.ibm.mq</artifactId>
+			<version>8.0.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.ibm</groupId>
+			<artifactId>com.ibm.mq.commonservices</artifactId>
+			<version>8.0.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.ibm</groupId>
+			<artifactId>com.ibm.mqjms</artifactId>
+			<version>8.0.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.ibm.mq</groupId>
+			<artifactId>com.ibm.mq.allclient</artifactId>
+			<version>9.0.4.0</version>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.bouncycastle</groupId>
+					<artifactId>bcprov-jdk15on</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk18on</artifactId>
+			<version>1.77</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>SSL_Decryption.1.0.0.0</groupId>
+			<artifactId>SSL_Decryption.1.0.0.0</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j13</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.fd.vplus</groupId>
+			<artifactId>com.fd.vplus.license</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fd.vplus</groupId>
+			<artifactId>dmc.userexit</artifactId>
+			<version>1.0</version>
+		</dependency>
+		
+		<!--
+     	<dependency>
+            <groupId>com.fd.vplus.SSL</groupId>
+            <artifactId>SSL-Decryption</artifactId>
+            <version>1.0.0.1</version>
+            <type>jar</type>            
+        </dependency>
+         <dependency>
+            <groupId>com.fd.vplus.license</groupId>
+            <artifactId>ExtendedValidator</artifactId>
+            <version>1.0.0</version>
+            <type>jar</type>            
+        </dependency>
+        <dependency>
+            <groupId>com.fd.vplus.userexit</groupId>
+            <artifactId>UserExitInterface</artifactId>
+            <version>1.0.0.0</version>
+            <type>jar</type>                        
+        </dependency>
+        -->
+        <dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.xml.ws</groupId>
+			<artifactId>jakarta.xml.ws-api</artifactId>
+			<version>3.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.ws</groupId>
+			<artifactId>jaxws-rt</artifactId>
+			<version>2.3.3</version>
+			<scope>runtime</scope>
+		</dependency>
+		<!--<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk15on</artifactId>
+			<version>1.60</version>
+		</dependency>-->
+		<!--<dependency>
+		    <groupId>org.codehaus.jettison</groupId>
+		    <artifactId>jettison</artifactId>
+		    <version>1.5.4</version>
+		</dependency>-->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20240205</version>
+		</dependency>
+		<dependency>
+		    <groupId>commons-configuration</groupId>
+		    <artifactId>commons-configuration</artifactId>
+		    <version>1.9</version>
+		</dependency>
+		<!--<dependency>
+			<groupId>com.nimbusds</groupId>
+			<artifactId>nimbus-jose-jwt</artifactId>
+			<version>9.37.3</version>
+		</dependency>-->
+		<!--<dependency>
+			<groupId>org.bitbucket.b_c</groupId>
+			<artifactId>jose4j</artifactId>
+			<version>0.9.5</version>
+		</dependency>-->
+		<!--<dependency>
+			<groupId>org.w3c</groupId>
+			<artifactId>dom</artifactId>
+			<version>2.3.0-jaxb-1.0.6</version>
+		</dependency>-->
+		<!--<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcpkix-jdk18on</artifactId>
+			<version>1.77</version>
+		</dependency>-->
+		<!--<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk18on</artifactId>
+			<version>1.77</version>
+		</dependency>-->
+		
+		<dependency>
+		    <groupId>org.quartz-scheduler</groupId>
+		    <artifactId>quartz</artifactId>
+		    <version>2.3.2</version>
+		</dependency>
+		<!-- DIRECT QUARTZ CAMEL-->
+		<!--<dependency>
+		    <groupId>org.apache.camel</groupId>
+		    <artifactId>camel-quartz</artifactId>
+			<version>${camel.version}</version>
+		</dependency>-->
+	   
+	</dependencies>
+	
+	<build>
+		<finalName>DMC.${project.version}</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<excludes>
+					<exclude>**</exclude>
+				</excludes>
+				<includes>
+					<include>META-INF</include>
+				</includes>
+			</resource>
+		</resources>
+		<plugins>
+			<!-- Fortify - Temporarily removing fortify <plugin> <groupId>com.fortify.sca.plugins.maven 
+				</groupId> <artifactId>sca-maven-plugin</artifactId> <version>18.10</version> 
+				<executions> <execution> <goals> <goal>clean</goal> <goal>translate</goal> 
+				<goal>scan</goal> </goals> <configuration> <uploadToSSC>false</uploadToSSC> 
+				<sscUrl>https://fortify.1dc.com/ssc</sscUrl> <sscApplicationName>DMC</sscApplicationName> 
+				<sscApplicationVersion>1.0</sscApplicationVersion> <emailAddress>sunil.biswal@firstdata.com</emailAddress> 
+				</configuration> </execution> </executions> </plugin> <!- The configuration 
+				of maven-jar-plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.10</version>
+				<configuration>
+					<testFailureIgnore>true</testFailureIgnore>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+				    <archive>
+						<manifest>
+							<mainClass>com.fd.vplus.dmc.camel.DMCMain</mainClass>
+						</manifest>
+					</archive>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<appendAssemblyId>false</appendAssemblyId>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id> <!-- this is used for inheritance merges -->
+						<phase>package</phase> <!-- bind to the packaging phase -->
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-install-plugin</artifactId>
+				<version>2.5.2</version>
+				<executions>
+					<execution>
+						<id>install-ssl</id>
+						<phase>clean</phase>
+						<configuration>
+							<file>${project.basedir}/lib/SSL_Decryption.1.0.0.0-0.0.1-SNAPSHOT.jar</file> 
+							<repositoryLayout>default</repositoryLayout>
+							<groupId>SSL_Decryption.1.0.0.0</groupId>
+							<artifactId>SSL_Decryption.1.0.0.0</artifactId>
+							<version>0.0.1</version>
+							<packaging>jar</packaging>
+							<generatePom>true</generatePom>
+						</configuration>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>install-lk</id>
+						<phase>clean</phase>
+						<configuration>
+							<file>${project.basedir}/lib/LicenseKey_validation.1.0.0.0.jar</file>
+							<repositoryLayout>default</repositoryLayout>
+							<groupId>com.fd.vplus</groupId>
+							<artifactId>com.fd.vplus.license</artifactId>
+							<version>1.0</version>
+							<packaging>jar</packaging>
+							<generatePom>true</generatePom>
+						</configuration>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>install-userexit</id>
+						<phase>clean</phase>
+						<configuration>
+							<file>${project.basedir}/lib/DMC-CustomCode-interface.1.0.0.0.jar</file>
+							<repositoryLayout>default</repositoryLayout>
+							<groupId>com.fd.vplus</groupId>
+							<artifactId>dmc.userexit</artifactId>
+							<version>1.0</version>
+							<packaging>jar</packaging>
+							<generatePom>true</generatePom>
+						</configuration>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+					</execution>
+					
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	<!-- <dependencyManagement> <dependencies> <dependency> <groupId>org.json</groupId> 
+		<artifactId>json</artifactId> <version>20180130</version> </dependency> </dependencies> 
+		</dependencyManagement> -->
+
+</project>
