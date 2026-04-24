@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+    <SOAP-ENV:Header/>
+    <SOAP-ENV:Body>
+        <DMC_ROOT xmlns="http://visionplus.firstdata.com/XMLschema">
+    <DMC_HEADER>
+        <MESSAGE_NAME>M.CDM.EJCIC.OUTGOING.O</MESSAGE_NAME>
+        <MESSAGE_VERSION>R00000</MESSAGE_VERSION>
+        <CONTEXT>SYSTEM.VPLUS</CONTEXT>
+        <CLIENT_ID/>
+        <CORREL_ID/>
+        <SIGNON_NAME/>
+    </DMC_HEADER>
+    <DMC_MSGOUT>
+        <SVC_RTN_AREA>
+            <SVC_RTN>P</SVC_RTN>
+        </SVC_RTN_AREA>
+        <FIELD_CODE_AREA>
+            <fc_0101> </fc_0101>
+            <fc_0102> </fc_0102>
+            <fc_5001>CDM</fc_5001>
+            <fc_5003>P112121802</fc_5003>
+            <fc_5004>P112121802</fc_5004>
+            <fc_5005> </fc_5005>
+            <fc_5007>A1A</fc_5007>
+            <fc_5008>N</fc_5008>
+            <fc_5009>472836</fc_5009>
+            <fc_5010> </fc_5010>
+            <fc_5012>C</fc_5012>
+            <fc_5014> </fc_5014>
+            <fc_5015>0013102023130162512</fc_5015>
+            <fc_5002>2024-02-16 16:25:013</fc_5002>
+            <fc_5006>Q017</fc_5006>
+            <fc_5011>IF04</fc_5011>
+            <fc_5013>IF04</fc_5013>
+        </FIELD_CODE_AREA>
+    </DMC_MSGOUT>
+</DMC_ROOT>
+    </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
