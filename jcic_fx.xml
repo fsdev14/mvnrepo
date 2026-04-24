@@ -1,0 +1,144 @@
+import net.sf.saxon.TransformerFactoryImpl;
+
+import javax.xml.transform.*;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import java.io.*;
+
+public class SoapTransformFixed {
+
+    public static void main(String[] args) throws Exception {
+
+        // ✅ Always force Saxon (required for stability + XSLT 2.0 support)
+        TransformerFactory factory = new TransformerFactoryImpl();
+
+        // Optional: strict error handling (helps debugging silent failures)
+        factory.setErrorListener(new ErrorListener() {
+            @Override public void warning(TransformerException e) { e.printStackTrace(); }
+            @Override public void error(TransformerException e) { e.printStackTrace(); }
+            @Override public void fatalError(TransformerException e) { e.printStackTrace(); }
+        });
+
+        // ✅ Load XSLT
+        Source xslt = new StreamSource(new File("transform.xsl"));
+        Transformer transformer = factory.newTransformer(xslt);
+
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+
+        // 🚨 IMPORTANT FIX: DO NOT convert DOM → String
+        // Use DOM directly OR stream directly
+
+        // OPTION A (best if you already have DOM)
+        // DOMSource source = new DOMSource(document);
+
+        // OPTION B (recommended streaming approach)
+        Source xmlSource = new StreamSource(new File("input.xml"));
+
+        StringWriter writer = new StringWriter();
+        Result result = new StreamResult(writer);
+
+        transformer.transform(xmlSource, result);
+
+        String output = writer.toString();
+
+        System.out.println("=== TRANSFORM OUTPUT ===");
+        System.out.println(output);
+    }
+}
+
+<xsl:stylesheet version="1.0"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:in="http://test.com/XMLschema"
+    exclude-result-prefixes="in soap">
+
+    <xsl:output method="xml" indent="yes"/>
+    <xsl:strip-space elements="*"/>
+
+    <!-- ✅ SAFE ENTRY POINT -->
+    <xsl:template match="/">
+        <xsl:apply-templates select="soap:Envelope/soap:Body/in:DMC_ROOT/in:DMC_MSGOUT/in:FIELD_CODE_AREA"/>
+    </xsl:template>
+
+    <!-- ignore unwanted nodes -->
+    <xsl:template match="in:SVC_RTN_AREA"/>
+
+    <!-- MAIN TRANSFORMATION -->
+    <xsl:template match="in:FIELD_CODE_AREA">
+
+        <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+                       xmlns:ns="http://webService.jcic.pro.com">
+
+            <soap:Header/>
+            <soap:Body>
+
+                <ns:queryJCIC>
+
+                    <ns:systemName>
+                        <xsl:value-of select="normalize-space(in:fc_5001)"/>
+                    </ns:systemName>
+
+                    <ns:timeStr>
+                        <xsl:value-of select="normalize-space(in:fc_5002)"/>
+                    </ns:timeStr>
+
+                    <ns:macValue>
+                        <xsl:value-of select="normalize-space(in:fc_5003)"/>
+                    </ns:macValue>
+
+                    <ns:querykey1>
+                        <xsl:value-of select="normalize-space(in:fc_5004)"/>
+                    </ns:querykey1>
+
+                    <ns:querykey2>
+                        <xsl:value-of select="normalize-space(in:fc_5005)"/>
+                    </ns:querykey2>
+
+                    <ns:txtId>
+                        <xsl:value-of select="normalize-space(in:fc_5006)"/>
+                    </ns:txtId>
+
+                    <ns:inquiryReason>
+                        <xsl:value-of select="normalize-space(in:fc_5007)"/>
+                    </ns:inquiryReason>
+
+                    <ns:sendJCIC>
+                        <xsl:value-of select="normalize-space(in:fc_5008)"/>
+                    </ns:sendJCIC>
+
+                    <ns:queryId>
+                        <xsl:value-of select="normalize-space(in:fc_5009)"/>
+                    </ns:queryId>
+
+                    <ns:queryName>
+                        <xsl:value-of select="normalize-space(in:fc_5010)"/>
+                    </ns:queryName>
+
+                    <ns:chargeBranchCode>
+                        <xsl:value-of select="normalize-space(in:fc_5011)"/>
+                    </ns:chargeBranchCode>
+
+                    <ns:rspType>
+                        <xsl:value-of select="normalize-space(in:fc_5012)"/>
+                    </ns:rspType>
+
+                    <ns:queryDepCode>
+                        <xsl:value-of select="normalize-space(in:fc_5013)"/>
+                    </ns:queryDepCode>
+
+                    <ns:queryDepName>
+                        <xsl:value-of select="normalize-space(in:fc_5014)"/>
+                    </ns:queryDepName>
+
+                    <ns:txSerialNo>
+                        <xsl:value-of select="normalize-space(in:fc_5015)"/>
+                    </ns:txSerialNo>
+
+                </ns:queryJCIC>
+
+            </soap:Body>
+        </soap:Envelope>
+
+    </xsl:template>
+
+</xsl:stylesheet>
